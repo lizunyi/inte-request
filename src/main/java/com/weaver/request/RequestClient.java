@@ -44,6 +44,14 @@ public class RequestClient extends HttpClient {
 		return builder.build();
 	}
 
+	/***
+	 * 发送请求-同步
+	 * 
+	 * @param header 请求头部
+	 * @param body   请求数据
+	 * @return
+	 * @throws Exception
+	 */
 	public JSONObject send(RequestHeader header, RequestBody requestBody) throws Exception {
 		JSONObject result = new JSONObject();
 		Request req = common(header, requestBody);
@@ -55,8 +63,48 @@ public class RequestClient extends HttpClient {
 		return result;
 	}
 
-	public void sendAsync(RequestHeader header, RequestBody requestBody, Callback callback) throws Exception {
+	/***
+	 * 发送请求-同步
+	 * 
+	 * @param header 请求头部
+	 * @param body   请求数据
+	 * @return
+	 * @throws Exception
+	 */
+	public JSONObject send() throws Exception {
+		JSONObject result = new JSONObject();
+		Request req = common(header, body);
+		Response res = https.newCall(req).execute();
+		String responseBody = res.body().string();
+		result.put("body", responseBody);
+		JSONObject responseHeader = ResponseHeader.getJson(res);
+		result.put("header", responseHeader);
+		return result;
+	}
+
+	/***
+	 * 发送请求-异步
+	 * 
+	 * @param header 请求头部
+	 * @param body   请求数据
+	 * @return
+	 * @throws Exception
+	 */
+	public void send(RequestHeader header, RequestBody requestBody, Callback callback) throws Exception {
 		Request req = common(header, requestBody);
+		https.newCall(req).enqueue(callback);
+	}
+
+	/***
+	 * 发送请求-异步
+	 * 
+	 * @param header 请求头部
+	 * @param body   请求数据
+	 * @return
+	 * @throws Exception
+	 */
+	public void send(Callback callback) throws Exception {
+		Request req = common(header, body);
 		https.newCall(req).enqueue(callback);
 	}
 }
