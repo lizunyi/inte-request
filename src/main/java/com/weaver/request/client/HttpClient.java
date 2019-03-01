@@ -20,11 +20,11 @@ public abstract class HttpClient {
 	protected RequestBody body;
 	protected RequestAuthorization auth;
 
-	protected OkHttpClient http = new OkHttpClient().newBuilder().connectTimeout(20, TimeUnit.SECONDS)
-			.readTimeout(10, TimeUnit.MINUTES).build();
+	protected OkHttpClient http = new OkHttpClient().newBuilder().connectTimeout(10, TimeUnit.SECONDS)
+			.readTimeout(3, TimeUnit.MINUTES).build();
 
-	protected OkHttpClient https = new OkHttpClient().newBuilder().connectTimeout(20, TimeUnit.SECONDS)
-			.readTimeout(10, TimeUnit.MINUTES).sslSocketFactory(MySSLSocketFactory.build())
+	protected OkHttpClient https = new OkHttpClient().newBuilder().connectTimeout(10, TimeUnit.SECONDS)
+			.readTimeout(3, TimeUnit.MINUTES).sslSocketFactory(MySSLSocketFactory.build())
 			.hostnameVerifier(new MyTrustHostnameVerifier()).build();
 
 	protected String url;
