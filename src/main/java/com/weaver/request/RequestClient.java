@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.weaver.request.client.HttpClient;
+import com.weaver.request.constants.RequestContentType;
 import com.weaver.request.constants.RequestMethod;
 
 import net.sf.json.JSONObject;
@@ -22,22 +23,21 @@ public class RequestClient extends HttpClient {
 	private Logger logger = LoggerFactory.getLogger(RequestClient.class);
 
 	private Request common(RequestHeader header, RequestBody requestBody) throws Exception {
-		String $med = RequestMethod.values()[method].name();
 		okhttp3.RequestBody request = null;
 
 		logger.debug("url:" + url);
-		logger.debug("method:" + $med);
+		logger.debug("method:" + method);
 
-		if (requestBody != null && !(RequestMethod.GET.ordinal() == method || RequestMethod.HEAD.ordinal() == method)) {
-			if (2 == contentType) {
+		if (requestBody != null && !(RequestMethod.GET == method || RequestMethod.HEAD == method)) {
+			if (RequestContentType.MULTIPART == contentType) {
 				request = requestBody.getMultipartBody();
-			} else if (3 == contentType) {
+			} else if (RequestContentType.FORM == contentType) {
 				request = okhttp3.RequestBody.create(getMediaType(), requestBody.getFormBody());
-			} else if (4 == contentType) {
+			} else if (RequestContentType.RAW == contentType) {
 				request = okhttp3.RequestBody.create(requestBody.getMediaType(), requestBody.getRawBody());
 			}
 		}
-		Builder builder = new Request.Builder().method($med, request).url(url);
+		Builder builder = new Request.Builder().method(method.name(), request).url(url);
 		if (header != null) {
 			header.build(builder);
 		}

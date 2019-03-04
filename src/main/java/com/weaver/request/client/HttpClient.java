@@ -5,6 +5,8 @@ import java.util.concurrent.TimeUnit;
 import com.weaver.request.RequestAuthorization;
 import com.weaver.request.RequestBody;
 import com.weaver.request.RequestHeader;
+import com.weaver.request.constants.RequestContentType;
+import com.weaver.request.constants.RequestMethod;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -28,8 +30,8 @@ public abstract class HttpClient {
 			.hostnameVerifier(new MyTrustHostnameVerifier()).build();
 
 	protected String url;
-	protected int method = 1;
-	protected int contentType = 1;
+	protected RequestMethod method = RequestMethod.GET;
+	protected RequestContentType contentType = RequestContentType.NONE;
 
 	/***
 	 * URL,必选
@@ -48,9 +50,12 @@ public abstract class HttpClient {
 	 * @param method
 	 * @return
 	 */
-	public HttpClient method(int method) {
+	public HttpClient method(RequestMethod method) {
 		this.method = method;
 		return this;
+	}
+	public HttpClient method(int method) {
+		return method(RequestMethod.values()[method]);
 	}
 
 	/***
@@ -59,33 +64,35 @@ public abstract class HttpClient {
 	 * @param contentType
 	 * @return
 	 */
-	public HttpClient contentType(int contentType) {
+	public HttpClient contentType(RequestContentType contentType) {
 		this.contentType = contentType;
 		return this;
+	}
+	public HttpClient contentType(int contentType) {
+		return contentType(RequestContentType.values()[contentType]);
 	}
 
 	protected MediaType getMediaType() {
 		MediaType mediaType = null;
-		if (1 == contentType) {// none
+
+		if (RequestContentType.NONE == contentType) {// none
 			mediaType = MediaType.parse("text/plain");
-		} else if (2 == contentType) {// form-data
+		} else if (RequestContentType.MULTIPART == contentType) {// form-data
 
-		} else if (3 == contentType) {// x-www-form-urlencoded
+		} else if (RequestContentType.FORM == contentType) {// x-www-form-urlencoded
 			mediaType = MediaType.parse("application/x-www-form-urlencoded");
-		} else if (4 == contentType) {// raw
+		} else if (RequestContentType.RAW == contentType) {// raw
 
-		} else if (5 == contentType) {// binary
+		} else if (RequestContentType.BINARY == contentType) {// binary
 
 		}
 		return mediaType;
 	}
- 
 
 	public HttpClient setHeader(RequestHeader header) {
 		this.header = header;
 		return this;
 	}
- 
 
 	public HttpClient setBody(RequestBody body) {
 		this.body = body;

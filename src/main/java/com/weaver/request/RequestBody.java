@@ -2,6 +2,7 @@ package com.weaver.request;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.weaver.request.constants.RequestRawFormat;
 import com.weaver.request.util.StringUtil;
 
 import okhttp3.MediaType;
@@ -25,7 +27,7 @@ public class RequestBody {
 	private Logger logger = LoggerFactory.getLogger(RequestClient.class);
 	private List<Map> params = new ArrayList();
 	private String rowBody = "";
-	private int rawFormat = 0;
+	private RequestRawFormat rawFormat = null;
 
 	public void add(String $key, Object $value) {
 		Map map = new HashMap();
@@ -42,8 +44,12 @@ public class RequestBody {
 		params.add(map);
 	}
 
-	public void set(int rawFormat, String rowBody) {
+	public void set(RequestRawFormat rawFormat, String rowBody) {
 		this.rowBody = rowBody;
+	}
+
+	public void set(int rawFormat, String rowBody) {
+		set(RequestRawFormat.values()[rawFormat], rowBody);
 	}
 
 	String getFormBody() {
@@ -89,17 +95,17 @@ public class RequestBody {
 	MediaType getMediaType() {
 		MediaType mediaType = null;
 		// raw
-		if (1 == rawFormat) {
+		if (RequestRawFormat.TEXT == rawFormat) {
 			mediaType = MediaType.parse("text/plain");
-		} else if (2 == rawFormat) {
+		} else if (RequestRawFormat.JSON == rawFormat) {
 			mediaType = MediaType.parse("application/json");
-		} else if (3 == rawFormat) {
+		} else if (RequestRawFormat.JAVASCRIPT == rawFormat) {
 			mediaType = MediaType.parse("application/javascript");
-		} else if (4 == rawFormat) {
+		} else if (RequestRawFormat.APPLICATIONXML == rawFormat) {
 			mediaType = MediaType.parse("application/xml");
-		} else if (5 == rawFormat) {
+		} else if (RequestRawFormat.TEXTXML == rawFormat) {
 			mediaType = MediaType.parse("text/xml");
-		} else if (6 == rawFormat) {
+		} else if (RequestRawFormat.HTML == rawFormat) {
 			mediaType = MediaType.parse("text/html");
 		}
 		return mediaType;
