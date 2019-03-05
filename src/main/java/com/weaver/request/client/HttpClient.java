@@ -54,6 +54,12 @@ public abstract class HttpClient {
 		this.method = method;
 		return this;
 	}
+	/***
+	 * method,可选,默认:Get方式
+	 * 
+	 * @param method
+	 * @return
+	 */
 	public HttpClient method(int method) {
 		return method(RequestMethod.values()[method]);
 	}
@@ -68,6 +74,12 @@ public abstract class HttpClient {
 		this.contentType = contentType;
 		return this;
 	}
+	/***
+	 * contentType,可选,默认:none
+	 * 
+	 * @param contentType
+	 * @return
+	 */
 	public HttpClient contentType(int contentType) {
 		return contentType(RequestContentType.values()[contentType]);
 	}
