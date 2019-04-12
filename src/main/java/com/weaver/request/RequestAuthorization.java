@@ -1,7 +1,6 @@
 package com.weaver.request;
 
 import java.util.Base64;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,5 +14,4 @@ public class RequestAuthorization {
 	public String basicAuth(String username, String password) {
 		return Base64.getEncoder().encodeToString(("Basic " + username + ":" + password).getBytes());
 	}
-	
 }

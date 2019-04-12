@@ -101,17 +101,17 @@ public abstract class HttpClient {
 		return mediaType;
 	}
 
-	public HttpClient setHeader(RequestHeader header) {
+	public HttpClient header(RequestHeader header) {
 		this.header = header;
 		return this;
 	}
 
-	public HttpClient setBody(RequestBody body) {
+	public HttpClient body(RequestBody body) {
 		this.body = body;
 		return this;
 	}
 
-	public HttpClient setAuth(RequestAuthorization auth) {
+	public HttpClient auth(RequestAuthorization auth) {
 		this.auth = auth;
 		return this;
 	}

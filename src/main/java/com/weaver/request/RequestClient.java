@@ -71,6 +71,20 @@ public class RequestClient extends HttpClient {
 	 * @return
 	 * @throws Exception
 	 */
+	public String result() throws Exception {
+		Request req = common(header, body);
+		Response res = https.newCall(req).execute();
+		return res.body().string();
+	}
+	
+	/***
+	 * 发送请求-同步
+	 * 
+	 * @param header 请求头部
+	 * @param body   请求数据
+	 * @return
+	 * @throws Exception
+	 */
 	public JSONObject send() throws Exception {
 		JSONObject result = new JSONObject();
 		Request req = common(header, body);
