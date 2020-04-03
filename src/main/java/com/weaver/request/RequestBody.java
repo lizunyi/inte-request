@@ -24,7 +24,7 @@ import okhttp3.MultipartBody.Builder;
  */
 public class RequestBody {
 
-	private Logger logger = LoggerFactory.getLogger(RequestClient.class);
+	private Logger logger = LoggerFactory.getLogger(RequestBody.class);
 	private List<Map> params = new ArrayList();
 	private String rowBody = "";
 	private RequestRawFormat rawFormat = null;
