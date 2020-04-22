@@ -1,4 +1,4 @@
-package com.weaver.request.util;
+package com.weaver.inte.request.util;
 
 /***
  * 

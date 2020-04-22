@@ -1,4 +1,4 @@
-package com.weaver.request;
+package com.weaver.inte.request;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,8 +10,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.weaver.request.constants.RequestRawFormat;
-import com.weaver.request.util.StringUtil;
+import com.weaver.inte.request.constants.RequestRawFormat;
+import com.weaver.inte.request.util.StringUtil;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody.Builder;

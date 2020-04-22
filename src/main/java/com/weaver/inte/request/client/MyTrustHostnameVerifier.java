@@ -1,4 +1,4 @@
-package com.weaver.request.client;
+package com.weaver.inte.request.client;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;

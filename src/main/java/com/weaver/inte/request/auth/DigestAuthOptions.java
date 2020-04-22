@@ -1,4 +1,4 @@
-package com.weaver.request.auth;
+package com.weaver.inte.request.auth;
 
 public class DigestAuthOptions {
 	private String realm;

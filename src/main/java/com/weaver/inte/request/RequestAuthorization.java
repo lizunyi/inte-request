@@ -1,4 +1,4 @@
-package com.weaver.request;
+package com.weaver.inte.request;
 
 import java.util.Base64;
 import org.slf4j.Logger;

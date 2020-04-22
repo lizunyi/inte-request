@@ -1,12 +1,12 @@
-package com.weaver.request.client;
+package com.weaver.inte.request.client;
 
 import java.util.concurrent.TimeUnit;
 
-import com.weaver.request.RequestAuthorization;
-import com.weaver.request.RequestBody;
-import com.weaver.request.RequestHeader;
-import com.weaver.request.constants.RequestContentType;
-import com.weaver.request.constants.RequestMethod;
+import com.weaver.inte.request.RequestAuthorization;
+import com.weaver.inte.request.RequestBody;
+import com.weaver.inte.request.RequestHeader;
+import com.weaver.inte.request.constants.RequestContentType;
+import com.weaver.inte.request.constants.RequestMethod;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;

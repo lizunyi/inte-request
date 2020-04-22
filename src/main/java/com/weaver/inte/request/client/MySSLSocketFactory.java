@@ -1,4 +1,4 @@
-package com.weaver.request.client;
+package com.weaver.inte.request.client;
 
 import java.security.SecureRandom;
 

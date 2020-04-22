@@ -1,11 +1,11 @@
-package com.weaver.request;
+package com.weaver.inte.request;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.weaver.request.client.HttpClient;
-import com.weaver.request.constants.RequestContentType;
-import com.weaver.request.constants.RequestMethod;
+import com.weaver.inte.request.client.HttpClient;
+import com.weaver.inte.request.constants.RequestContentType;
+import com.weaver.inte.request.constants.RequestMethod;
 
 import net.sf.json.JSONObject;
 import okhttp3.Callback;

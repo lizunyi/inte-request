@@ -1,4 +1,4 @@
-package com.weaver.request;
+package com.weaver.inte.request;
 
 import java.util.Set;
 
