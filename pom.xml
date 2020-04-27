@@ -49,7 +49,11 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
-		
+		<dependency>
+			  <groupId>com.weaver</groupId>
+			  <artifactId>inte.utils</artifactId>
+			  <version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

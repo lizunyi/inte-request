@@ -8,7 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.weaver.inte.request.util.StringUtil;
+import com.weaver.inte.utils.StringUtils;
 
 import okhttp3.Request.Builder;
 
@@ -26,8 +26,8 @@ public class RequestHeader {
 	void build(Builder build) {
 		if (params != null && params.size() > 0) {
 			params.forEach(map -> {
-				String key = StringUtil.ifNull(map.get("key"));
-				String value = StringUtil.ifNull(map.get("value"));
+				String key = StringUtils.ifNull(map.get("key"));
+				String value = StringUtils.ifNull(map.get("value"));
 				build.addHeader(key, value);
 				logger.debug(key + ":" + value);
 			});
