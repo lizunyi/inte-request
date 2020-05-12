@@ -1,4 +1,4 @@
-package com.weaver.inte.request.client;
+package com.weaver.inte.request.https;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;

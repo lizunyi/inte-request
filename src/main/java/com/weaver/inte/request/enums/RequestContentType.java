@@ -1,4 +1,4 @@
-package com.weaver.inte.request.constants;
+package com.weaver.inte.request.enums;
 
 public enum RequestContentType {
 	NONE(0), MULTIPART(1), FORM(2), RAW(3), BINARY(4);

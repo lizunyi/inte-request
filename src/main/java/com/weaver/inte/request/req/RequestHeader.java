@@ -1,35 +1,38 @@
-package com.weaver.inte.request;
+package com.weaver.inte.request.req;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.weaver.inte.utils.StringUtils;
 
 import okhttp3.Request.Builder;
 
 public class RequestHeader {
-	private Logger logger = LoggerFactory.getLogger(RequestClient.class);
-	List<Map> params = new ArrayList();
+	List<Map<String,Object>> params = new ArrayList<>();
 
-	public void add(String $key, Object $value) {
-		Map map = new HashMap();
-		map.put("key", $key);
-		map.put("value", $value);
+	public RequestHeader add(String key, Object value) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("key", key);
+		map.put("value", value);
 		params.add(map);
+		
+		return this;
 	}
 
-	void build(Builder build) {
+	public RequestHeader add(Map<String,Object> values) {
+		params.add(values);
+		return this;
+	}
+
+
+	void newBuild(Builder build) {
 		if (params != null && params.size() > 0) {
 			params.forEach(map -> {
 				String key = StringUtils.ifNull(map.get("key"));
 				String value = StringUtils.ifNull(map.get("value"));
 				build.addHeader(key, value);
-				logger.debug(key + ":" + value);
 			});
 		}
 	}

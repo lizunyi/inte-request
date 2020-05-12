@@ -1,73 +1,64 @@
-package com.weaver.inte.request;
+package com.weaver.inte.request.req;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.weaver.inte.request.constants.RequestRawFormat;
+import com.weaver.inte.request.enums.RequestRawFormat;
 import com.weaver.inte.utils.StringUtils;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody.Builder;
 
-/***
- * 构造网络请求参数类
- * 
- * @author saps.weaver
- *
- */
 public class RequestBody {
 
-	private Logger logger = LoggerFactory.getLogger(RequestBody.class);
-	private List<Map> params = new ArrayList();
+	private List<ConcurrentHashMap<String,Object>> params = new ArrayList<>();
 	private String rowBody = "";
 	private RequestRawFormat rawFormat = null;
 
-	public void add(String $key, Object $value) {
-		Map map = new HashMap();
-		map.put("key", $key);
-		map.put("value", $value);
+	public RequestBody add(String key, Object value) {
+		ConcurrentHashMap<String,Object> map = new ConcurrentHashMap<>();
+		map.put("key", key);
+		map.put("value", value);
 		params.add(map);
+		return this;
 	}
 
-	public void addFile(String $key, String fileName, byte[] $value) {
-		Map map = new HashMap();
-		map.put("key", $key);
+	public RequestBody addFile(String key, String fileName, byte[] value) {
+		ConcurrentHashMap<String,Object> map = new ConcurrentHashMap<>();
+		map.put("key", key);
 		map.put("fileName", fileName);
-		map.put("value", $value);
+		map.put("value", value);
 		params.add(map);
+		return this;
 	}
 
-	public void set(RequestRawFormat rawFormat, String rowBody) {
+	public RequestBody set(RequestRawFormat rawFormat, String rowBody) {
 		this.rowBody = rowBody;
+		return this;
 	}
 
-	public void set(int rawFormat, String rowBody) {
+	public RequestBody set(int rawFormat, String rowBody) {
 		set(RequestRawFormat.values()[rawFormat], rowBody);
+		return this;
 	}
 
 	String getFormBody() {
-		StringBuffer sb = new StringBuffer();
 		String result = "";
 		if (params != null && params.size() > 0) {
-			for (Map param : params) {
-				String key = StringUtils.ifNull(param.get("key"));
-				String value = StringUtils.ifNull(param.get("value"));
-				sb.append(String.format("&%s=%s", key, value));
-			}
-			result = sb.substring(1);
+			result = params.stream().map(x->{
+				String key = StringUtils.ifNull(x.get("key"));
+				String value = StringUtils.ifNull(x.get("value"));
+				return key + "=" + value;
+			}).collect(Collectors.joining("&"));
 		}
-		logger.debug("body:" + result);
 		return result;
 	}
 
 	String getRawBody() {
-		logger.debug("body:" + rowBody);
 		return rowBody;
 	}
 
