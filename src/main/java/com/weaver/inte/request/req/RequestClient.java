@@ -1,5 +1,7 @@
 package com.weaver.inte.request.req;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -7,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import com.weaver.inte.request.auth.RequestAuthorization;
 import com.weaver.inte.request.enums.RequestContentType;
 import com.weaver.inte.request.enums.RequestMethod;
+import com.weaver.inte.request.enums.RequestSchema;
 import com.weaver.inte.request.https.MySSLSocketFactory;
 import com.weaver.inte.request.https.MyTrustCerts;
 import com.weaver.inte.request.https.MyTrustHostnameVerifier;
@@ -26,32 +29,24 @@ import okhttp3.Response;
  *
  */
 public class RequestClient {
-	
+
 	private RequestHeader header;
 	private RequestBody body;
 	private RequestAuthorization authorization;
 
-	private OkHttpClient http = new OkHttpClient()
-			.newBuilder()
-			.connectTimeout(3, TimeUnit.SECONDS)
-			.readTimeout(60, TimeUnit.SECONDS)
-			.retryOnConnectionFailure(true)
-			.build();
+	private OkHttpClient.Builder builderHttp = new OkHttpClient.Builder().connectTimeout(3, TimeUnit.SECONDS)
+			.readTimeout(60, TimeUnit.SECONDS).retryOnConnectionFailure(true);
 
-	private OkHttpClient https = new OkHttpClient()
-			.newBuilder()
-			.connectTimeout(3, TimeUnit.SECONDS)
-			.readTimeout(60, TimeUnit.SECONDS)
-			.sslSocketFactory(MySSLSocketFactory.build(), new MyTrustCerts())
-			.hostnameVerifier(new MyTrustHostnameVerifier())
-			.retryOnConnectionFailure(true)
-			.build();
+	private OkHttpClient.Builder builderHttps = new OkHttpClient.Builder().connectTimeout(3, TimeUnit.SECONDS)
+			.readTimeout(60, TimeUnit.SECONDS).sslSocketFactory(MySSLSocketFactory.build(), new MyTrustCerts())
+			.hostnameVerifier(new MyTrustHostnameVerifier()).retryOnConnectionFailure(true);
 
 	private String url;
+	private RequestSchema schema = RequestSchema.http;
 	private RequestMethod method = RequestMethod.GET;
 	private RequestContentType contentType = RequestContentType.NONE;
-	private OkHttpClient commonClient = http;
-	
+	private OkHttpClient commonClient = null;
+
 	/***
 	 * http,默认http
 	 * 
@@ -59,15 +54,15 @@ public class RequestClient {
 	 * @return
 	 */
 	public RequestClient http() {
-		commonClient = http;
+		schema = RequestSchema.http;
 		return this;
 	}
-	
+
 	public RequestClient https() {
-		commonClient = https;
+		schema = RequestSchema.https;
 		return this;
 	}
-	
+
 	/***
 	 * URL,必选
 	 * 
@@ -123,6 +118,12 @@ public class RequestClient {
 		return this;
 	}
 
+	public RequestClient proxy(String schema, String host, int port) {
+		Proxy proxy = new Proxy(Proxy.Type.valueOf(schema.toUpperCase()), new InetSocketAddress(host, port));
+		builderHttp.proxy(proxy);
+		return this;
+	}
+
 	public RequestClient body(RequestBody body) {
 		this.body = body;
 		return this;
@@ -133,10 +134,10 @@ public class RequestClient {
 		return this;
 	}
 
-	
 	private Request common(RequestHeader header, RequestBody requestBody) throws Exception {
-		okhttp3.RequestBody request = null;
+		initClient();
 		
+		okhttp3.RequestBody request = null;
 		if (requestBody != null && !(RequestMethod.GET == method || RequestMethod.HEAD == method)) {
 			if (RequestContentType.MULTIPART == contentType) {
 				request = requestBody.getMultipartBody();
@@ -161,13 +162,13 @@ public class RequestClient {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String,Object> send(RequestHeader header, RequestBody requestBody) throws Exception {
-		Map<String,Object> result = new HashMap<>();
+	public Map<String, Object> send(RequestHeader header, RequestBody requestBody) throws Exception {
+		Map<String, Object> result = new HashMap<>();
 		Request req = common(header, requestBody);
 		Response res = commonClient.newCall(req).execute();
 		String responseBody = res.body().string();
 		result.put("body", responseBody);
-		Map<String,String> responseHeader = RequestUtils.getHeaderMap(res.headers());
+		Map<String, String> responseHeader = RequestUtils.getHeaderMap(res.headers());
 		result.put("header", responseHeader);
 		return result;
 	}
@@ -185,7 +186,7 @@ public class RequestClient {
 		Response res = commonClient.newCall(req).execute();
 		return res.body().string();
 	}
-	
+
 	/***
 	 * 发送请求-同步
 	 * 
@@ -194,13 +195,13 @@ public class RequestClient {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String,Object> send() throws Exception {
-		Map<String,Object> result = new HashMap<>();
+	public Map<String, Object> send() throws Exception {
+		Map<String, Object> result = new HashMap<>();
 		Request req = common(header, body);
 		Response res = commonClient.newCall(req).execute();
 		String responseBody = res.body().string();
 		result.put("body", responseBody);
-		Map<String,String> responseHeader = RequestUtils.getHeaderMap(res.headers());
+		Map<String, String> responseHeader = RequestUtils.getHeaderMap(res.headers());
 		result.put("header", responseHeader);
 		return result;
 	}
@@ -231,4 +232,13 @@ public class RequestClient {
 		commonClient.newCall(req).enqueue(callback);
 	}
 	
+	public void initClient() throws Exception {
+		if(commonClient == null) {
+			if(schema == RequestSchema.http) {
+				commonClient = builderHttp.build();
+			}else {
+				commonClient = builderHttps.build();
+			}
+		}
+	}
 }
