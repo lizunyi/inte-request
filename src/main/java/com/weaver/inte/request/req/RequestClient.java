@@ -126,6 +126,7 @@ public class RequestClient {
 
 	public RequestClient body(RequestBody body) {
 		this.body = body;
+		this.method(RequestMethod.POST);
 		return this;
 	}
 
