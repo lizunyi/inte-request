@@ -207,6 +207,12 @@ public class RequestClient {
 		return result;
 	}
 
+	public Response res() throws Exception {
+		Request req = common(header, body);
+		Response res = commonClient.newCall(req).execute();
+		return res;
+	}
+	
 	/***
 	 * 发送请求-异步
 	 * 
@@ -236,8 +242,10 @@ public class RequestClient {
 	public void initClient() throws Exception {
 		if(commonClient == null) {
 			if(schema == RequestSchema.http) {
+//				builderHttp.followRedirects(false);
 				commonClient = builderHttp.build();
 			}else {
+//				builderHttp.followRedirects(false);
 				commonClient = builderHttps.build();
 			}
 		}

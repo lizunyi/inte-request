@@ -14,7 +14,7 @@ public class RequestUtils {
 			result = heads.names().stream().collect(Collectors.toMap(Function.identity(),  new Function<String, String>() {
 				@Override
 				public String apply(String t) {
-					return heads.get(t);
+					return String.join(";", heads.values(t));
 				}
 			}));
 		}
