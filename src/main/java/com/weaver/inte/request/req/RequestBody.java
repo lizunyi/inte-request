@@ -36,16 +36,18 @@ public class RequestBody {
 		return this;
 	}
 
-	public RequestBody set(RequestRawFormat rawFormat, String rowBody) {
+	public RequestBody raw(RequestRawFormat rawFormat, String rowBody) {
 		this.rowBody = rowBody;
 		return this;
 	}
-
-	public RequestBody set(int rawFormat, String rowBody) {
-		set(RequestRawFormat.values()[rawFormat], rowBody);
+	
+	public RequestBody binary(byte[] value) {
+		ConcurrentHashMap<String,Object> map = new ConcurrentHashMap<>();
+		map.put("value", value);
+		params.add(map);
 		return this;
 	}
-
+ 
 	String getFormBody() {
 		String result = "";
 		if (params != null && params.size() > 0) {
@@ -62,6 +64,10 @@ public class RequestBody {
 		return rowBody;
 	}
 
+	byte[] getBinaryBody() {
+		return (byte[]) params.get(0).get("value");
+	}
+	
 	okhttp3.RequestBody getMultipartBody() throws IOException {
 		Builder build = new Builder();
 		build.setType(MediaType.parse("multipart/form-data"));

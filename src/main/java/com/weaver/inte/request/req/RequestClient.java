@@ -146,6 +146,8 @@ public class RequestClient {
 				request = okhttp3.RequestBody.create(getMediaType(), requestBody.getFormBody());
 			} else if (RequestContentType.RAW == contentType) {
 				request = okhttp3.RequestBody.create(requestBody.getMediaType(), requestBody.getRawBody());
+			} else if (RequestContentType.BINARY == contentType) {
+				request = okhttp3.RequestBody.create(MediaType.get("application/octet-stream"), requestBody.getBinaryBody());
 			}
 		}
 		Builder builder = new Request.Builder().method(method.name(), request).url(url);
