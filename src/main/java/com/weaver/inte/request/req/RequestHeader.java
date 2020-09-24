@@ -20,6 +20,10 @@ public class RequestHeader {
 		
 		return this;
 	}
+	
+	public Object get(String key) {
+		return params.stream().filter(x-> x.get("key").toString().equalsIgnoreCase(key)).findFirst().orElse(new HashMap()).get("value");
+	}
 
 	public RequestHeader add(Map<String,Object> values) {
 		params.add(values);

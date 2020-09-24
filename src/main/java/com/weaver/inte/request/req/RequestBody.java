@@ -37,6 +37,7 @@ public class RequestBody {
 	}
 
 	public RequestBody raw(RequestRawFormat rawFormat, String rowBody) {
+		this.rawFormat = rawFormat;
 		this.rowBody = rowBody;
 		return this;
 	}

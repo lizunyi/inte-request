@@ -82,6 +82,9 @@ public class RequestClient {
 	 */
 	public RequestClient method(RequestMethod method) {
 		this.method = method;
+		if(contentType == RequestContentType.NONE && method == RequestMethod.POST){
+			contentType = RequestContentType.FORM;
+		}
 		return this;
 	}
 
