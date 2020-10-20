@@ -34,35 +34,23 @@ public class RequestClient {
 	private RequestBody body;
 	private RequestAuthorization authorization;
 
-	private OkHttpClient.Builder builderHttp = new OkHttpClient.Builder().connectTimeout(3, TimeUnit.SECONDS)
+	private static final OkHttpClient.Builder builderHttp = new OkHttpClient.Builder().connectTimeout(3, TimeUnit.SECONDS)
 			.readTimeout(60, TimeUnit.SECONDS).retryOnConnectionFailure(true);
 
-	private OkHttpClient.Builder builderHttps = new OkHttpClient.Builder().connectTimeout(3, TimeUnit.SECONDS)
+	private static final OkHttpClient.Builder builderHttps = new OkHttpClient.Builder().connectTimeout(3, TimeUnit.SECONDS)
 			.readTimeout(60, TimeUnit.SECONDS).sslSocketFactory(MySSLSocketFactory.build(), new MyTrustCerts())
 			.hostnameVerifier(new MyTrustHostnameVerifier()).retryOnConnectionFailure(true);
 
+	private static volatile OkHttpClient commonClient = null;
+	
 	private String url;
-	private RequestSchema schema = RequestSchema.http;
 	private RequestMethod method = RequestMethod.GET;
 	private RequestContentType contentType = RequestContentType.NONE;
-	private OkHttpClient commonClient = null;
-
-	/***
-	 * http,默认http
-	 * 
-	 * @param url
-	 * @return
-	 */
-	public RequestClient http() {
-		schema = RequestSchema.http;
-		return this;
+	
+	RequestClient(){
+		
 	}
-
-	public RequestClient https() {
-		schema = RequestSchema.https;
-		return this;
-	}
-
+	
 	/***
 	 * URL,必选
 	 * 
@@ -139,8 +127,6 @@ public class RequestClient {
 	}
 
 	private Request common(RequestHeader header, RequestBody requestBody) throws Exception {
-		initClient();
-		
 		okhttp3.RequestBody request = null;
 		if (requestBody != null && !(RequestMethod.GET == method || RequestMethod.HEAD == method)) {
 			if (RequestContentType.MULTIPART == contentType) {
@@ -243,16 +229,20 @@ public class RequestClient {
 		Request req = common(header, body);
 		commonClient.newCall(req).enqueue(callback);
 	}
+ 
 	
-	public void initClient() throws Exception {
-		if(commonClient == null) {
-			if(schema == RequestSchema.http) {
-//				builderHttp.followRedirects(false);
-				commonClient = builderHttp.build();
-			}else {
-//				builderHttp.followRedirects(false);
-				commonClient = builderHttps.build();
-			}
-		}
+	public static RequestClient initClient(RequestSchema schema){
+        if (commonClient == null) {
+            synchronized (RequestClient.class) {
+                if(commonClient == null) {
+                    if(schema == RequestSchema.https) {
+						commonClient = builderHttps.build();
+					}else {
+						commonClient = builderHttp.build();
+					}
+                }
+            }
+        }
+        return new RequestClient();
 	}
 }

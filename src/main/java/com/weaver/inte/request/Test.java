@@ -4,13 +4,14 @@ import java.util.Map;
 
 import com.weaver.inte.request.enums.RequestContentType;
 import com.weaver.inte.request.enums.RequestMethod;
+import com.weaver.inte.request.enums.RequestSchema;
 import com.weaver.inte.request.req.RequestBody;
 import com.weaver.inte.request.req.RequestClient;
 import com.weaver.inte.request.req.RequestHeader;
 
 public class Test {
 	public static void main(String[] args) {
-		RequestClient client = new RequestClient();
+		RequestClient client = RequestClient.initClient(RequestSchema.http);
 		try {
 			Map<String,Object> result = null;
 			RequestHeader header = new RequestHeader();
