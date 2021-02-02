@@ -11,7 +11,7 @@ import com.weaver.inte.request.req.RequestHeader;
 
 public class Test {
 	public static void main(String[] args) {
-		RequestClient client = RequestClient.initClient(RequestSchema.http);
+		RequestClient client = new RequestClient();
 		try {
 			Map<String,Object> result = null;
 			RequestHeader header = new RequestHeader();

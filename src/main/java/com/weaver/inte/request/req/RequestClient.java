@@ -30,27 +30,22 @@ import okhttp3.Response;
  */
 public class RequestClient {
 
+	private static final OkHttpClient.Builder builderHttp = new OkHttpClient.Builder().connectTimeout(3, TimeUnit.SECONDS)
+			.readTimeout(240, TimeUnit.SECONDS).retryOnConnectionFailure(true);
+
+	private static final OkHttpClient.Builder builderHttps = new OkHttpClient.Builder().connectTimeout(3, TimeUnit.SECONDS)
+			.readTimeout(240, TimeUnit.SECONDS).sslSocketFactory(MySSLSocketFactory.build(), new MyTrustCerts())
+			.hostnameVerifier(new MyTrustHostnameVerifier()).retryOnConnectionFailure(true);
+
+	private String url;
+	private OkHttpClient commonClient;
+	private RequestMethod method = RequestMethod.GET;
+	private RequestContentType contentType = RequestContentType.NONE;
+	private RequestSchema schema;
 	private RequestHeader header;
 	private RequestBody body;
 	private RequestAuthorization authorization;
-
-	private static final OkHttpClient.Builder builderHttp = new OkHttpClient.Builder().connectTimeout(3, TimeUnit.SECONDS)
-			.readTimeout(60, TimeUnit.SECONDS).retryOnConnectionFailure(true);
-
-	private static final OkHttpClient.Builder builderHttps = new OkHttpClient.Builder().connectTimeout(3, TimeUnit.SECONDS)
-			.readTimeout(60, TimeUnit.SECONDS).sslSocketFactory(MySSLSocketFactory.build(), new MyTrustCerts())
-			.hostnameVerifier(new MyTrustHostnameVerifier()).retryOnConnectionFailure(true);
-
-	private static volatile OkHttpClient commonClient = null;
-	
-	private String url;
-	private RequestMethod method = RequestMethod.GET;
-	private RequestContentType contentType = RequestContentType.NONE;
-	
-	RequestClient(){
-		
-	}
-	
+	 
 	/***
 	 * URL,必选
 	 * 
@@ -61,7 +56,7 @@ public class RequestClient {
 		this.url = url;
 		return this;
 	}
-
+	
 	/***
 	 * method,可选,默认:Get方式
 	 * 
@@ -86,6 +81,7 @@ public class RequestClient {
 		this.contentType = contentType;
 		return this;
 	}
+
 
 	protected MediaType getMediaType() {
 		MediaType mediaType = null;
@@ -157,7 +153,7 @@ public class RequestClient {
 	public Map<String, Object> send(RequestHeader header, RequestBody requestBody) throws Exception {
 		Map<String, Object> result = new HashMap<>();
 		Request req = common(header, requestBody);
-		Response res = commonClient.newCall(req).execute();
+		Response res = getClient().newCall(req).execute();
 		String responseBody = res.body().string();
 		result.put("body", responseBody);
 		Map<String, String> responseHeader = RequestUtils.getHeaderMap(res.headers());
@@ -175,7 +171,7 @@ public class RequestClient {
 	 */
 	public String result() throws Exception {
 		Request req = common(header, body);
-		Response res = commonClient.newCall(req).execute();
+		Response res = getClient().newCall(req).execute();
 		return res.body().string();
 	}
 
@@ -190,7 +186,7 @@ public class RequestClient {
 	public Map<String, Object> send() throws Exception {
 		Map<String, Object> result = new HashMap<>();
 		Request req = common(header, body);
-		Response res = commonClient.newCall(req).execute();
+		Response res = getClient().newCall(req).execute();
 		String responseBody = res.body().string();
 		result.put("body", responseBody);
 		Map<String, String> responseHeader = RequestUtils.getHeaderMap(res.headers());
@@ -200,7 +196,7 @@ public class RequestClient {
 
 	public Response res() throws Exception {
 		Request req = common(header, body);
-		Response res = commonClient.newCall(req).execute();
+		Response res = getClient().newCall(req).execute();
 		return res;
 	}
 	
@@ -231,18 +227,24 @@ public class RequestClient {
 	}
  
 	
-	public static RequestClient initClient(RequestSchema schema){
-        if (commonClient == null) {
-            synchronized (RequestClient.class) {
-                if(commonClient == null) {
-                    if(schema == RequestSchema.https) {
-						commonClient = builderHttps.build();
-					}else {
-						commonClient = builderHttp.build();
-					}
-                }
-            }
-        }
-        return new RequestClient();
+	public RequestClient http(){
+        schema = RequestSchema.http;
+        return this;
+	}
+	
+	public RequestClient https(){
+        schema = RequestSchema.https;
+        return this;
+	}
+	
+	public OkHttpClient getClient(){
+		if(commonClient == null){
+	        if(schema == RequestSchema.https) {
+				commonClient = builderHttps.build();
+			} else {
+				commonClient = builderHttp.build();
+			}
+		}
+        return commonClient;
 	}
 }
