@@ -23,8 +23,8 @@ public class Test {
 //			System.out.println(result.get("body").toString().replaceAll("<br/>", "\n"));
 //			System.out.println("---------------------------------------------------------");
 			result = client
-					.method(RequestMethod.POST)
 					.url("http://192.168.1.3:8286/xxx/test/get")
+					.method(RequestMethod.POST)
 					.header(header)
 					.contentType(RequestContentType.FORM)
 					.body(body)

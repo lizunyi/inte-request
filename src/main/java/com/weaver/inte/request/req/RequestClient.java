@@ -65,7 +65,7 @@ public class RequestClient {
 	 */
 	public RequestClient method(RequestMethod method) {
 		this.method = method;
-		if(contentType == RequestContentType.NONE && method == RequestMethod.POST){
+		if(method == RequestMethod.POST){
 			contentType = RequestContentType.FORM;
 		}
 		return this;
@@ -128,7 +128,6 @@ public class RequestClient {
 
 	public RequestClient body(RequestBody body) {
 		this.body = body;
-		this.method(RequestMethod.POST);
 		return this;
 	}
 
