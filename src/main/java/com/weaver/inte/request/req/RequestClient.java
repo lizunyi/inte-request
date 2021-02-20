@@ -105,9 +105,24 @@ public class RequestClient {
 		return this;
 	}
 
-	public RequestClient proxy(String schema, String host, int port) {
-		Proxy proxy = new Proxy(Proxy.Type.valueOf(schema.toUpperCase()), new InetSocketAddress(host, port));
-		builderHttp.proxy(proxy);
+
+	public RequestClient followRedirects(boolean followRedirects) {
+        if(schema == RequestSchema.https) {
+			builderHttps.followRedirects(followRedirects);
+		} else {
+			builderHttp.followRedirects(followRedirects);
+		}
+		return this;
+	}
+
+
+	public RequestClient proxy(String sma, String host, int port) {
+		Proxy proxy = new Proxy(Proxy.Type.valueOf(sma.toUpperCase()), new InetSocketAddress(host, port));
+		if(schema == RequestSchema.https) {
+			builderHttps.proxy(proxy);
+		} else {
+			builderHttp.proxy(proxy);
+		}
 		return this;
 	}
 
