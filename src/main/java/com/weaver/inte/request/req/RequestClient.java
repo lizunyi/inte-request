@@ -251,7 +251,7 @@ public class RequestClient {
         return this;
 	}
 	
-	public OkHttpClient getClient(){
+	private OkHttpClient getClient(){
 		if(commonClient == null){
 	        if(schema == RequestSchema.https) {
 				commonClient = builderHttps.build();
