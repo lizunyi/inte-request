@@ -40,7 +40,7 @@ public class RequestClient {
 	private String url;
 	private OkHttpClient commonClient;
 	private RequestMethod method = RequestMethod.GET;
-	private RequestContentType contentType = RequestContentType.NONE;
+	private RequestContentType contentType = null;
 	private RequestSchema schema;
 	private RequestHeader header;
 	private RequestBody body;
@@ -138,6 +138,12 @@ public class RequestClient {
 
 	private Request common(RequestHeader header, RequestBody requestBody) throws Exception {
 		okhttp3.RequestBody request = null;
+		if(requestBody != null) {
+			RequestContentType $contentType = requestBody.contentType;
+			if (contentType == null) {
+				contentType = $contentType;
+			}
+		}
 		if (requestBody != null && !(RequestMethod.GET == method || RequestMethod.HEAD == method)) {
 			if (RequestContentType.MULTIPART == contentType) {
 				request = requestBody.getMultipartBody();
@@ -148,6 +154,8 @@ public class RequestClient {
 			} else if (RequestContentType.BINARY == contentType) {
 				request = okhttp3.RequestBody.create(MediaType.get("application/octet-stream"), requestBody.getBinaryBody());
 			}
+		} else {
+			request = okhttp3.RequestBody.create(getMediaType(), "");
 		}
 		Builder builder = new Request.Builder().method(method.name(), request).url(url);
 		if (header != null) {
@@ -160,7 +168,7 @@ public class RequestClient {
 	 * 发送请求-同步
 	 * 
 	 * @param header 请求头部
-	 * @param body   请求数据
+	 * @param requestBody 请求数据
 	 * @return
 	 * @throws Exception
 	 */
@@ -177,9 +185,6 @@ public class RequestClient {
 
 	/***
 	 * 发送请求-同步
-	 * 
-	 * @param header 请求头部
-	 * @param body   请求数据
 	 * @return
 	 * @throws Exception
 	 */
@@ -191,9 +196,6 @@ public class RequestClient {
 
 	/***
 	 * 发送请求-同步
-	 * 
-	 * @param header 请求头部
-	 * @param body   请求数据
 	 * @return
 	 * @throws Exception
 	 */
@@ -218,7 +220,7 @@ public class RequestClient {
 	 * 发送请求-异步
 	 * 
 	 * @param header 请求头部
-	 * @param body   请求数据
+	 * @param requestBody   请求数据
 	 * @return
 	 * @throws Exception
 	 */
@@ -229,9 +231,6 @@ public class RequestClient {
 
 	/***
 	 * 发送请求-异步
-	 * 
-	 * @param header 请求头部
-	 * @param body   请求数据
 	 * @return
 	 * @throws Exception
 	 */

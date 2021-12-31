@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import com.weaver.inte.request.enums.RequestContentType;
 import com.weaver.inte.request.enums.RequestRawFormat;
 import com.weaver.inte.utils.StringUtils;
 
@@ -18,6 +19,7 @@ public class RequestBody {
 	private List<ConcurrentHashMap<String,Object>> params = new ArrayList<>();
 	private String rowBody = "";
 	private RequestRawFormat rawFormat = null;
+	public RequestContentType contentType = RequestContentType.FORM;
 
 	public RequestBody add(String key, Object value) {
 		ConcurrentHashMap<String,Object> map = new ConcurrentHashMap<>();
@@ -33,12 +35,14 @@ public class RequestBody {
 		map.put("fileName", fileName);
 		map.put("value", value);
 		params.add(map);
+		contentType = RequestContentType.MULTIPART;
 		return this;
 	}
 
 	public RequestBody raw(RequestRawFormat rawFormat, String rowBody) {
 		this.rawFormat = rawFormat;
 		this.rowBody = rowBody;
+		contentType = RequestContentType.RAW;
 		return this;
 	}
 	
@@ -46,6 +50,7 @@ public class RequestBody {
 		ConcurrentHashMap<String,Object> map = new ConcurrentHashMap<>();
 		map.put("value", value);
 		params.add(map);
+		contentType = RequestContentType.BINARY;
 		return this;
 	}
  
@@ -69,18 +74,19 @@ public class RequestBody {
 		return (byte[]) params.get(0).get("value");
 	}
 	
-	okhttp3.RequestBody getMultipartBody() throws IOException {
+	okhttp3.RequestBody getMultipartBody() {
 		Builder build = new Builder();
 		build.setType(MediaType.parse("multipart/form-data"));
 		if (params != null && params.size() > 0) {
 			for (Map param : params) {
 				String key = StringUtils.ifNull(param.get("key"));
-				if (param.containsKey("fileName")) {// 文件
+				if (param.containsKey("fileName")) {
+					//文件
 					String fileName = StringUtils.ifNull(param.get("fileName"));
 					byte[] value = (byte[]) param.get("value");
-					build.addFormDataPart(key, fileName,
-							okhttp3.RequestBody.create(MediaType.parse("application/octet-stream"), value));
-				} else {// 字符串
+					build.addFormDataPart(key, fileName, okhttp3.RequestBody.create(MediaType.parse("application/octet-stream"), value));
+				} else {
+					// 字符串
 					String value = StringUtils.ifNull(param.get("value"));
 					build.addFormDataPart(key, value);
 				}

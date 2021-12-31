@@ -16,6 +16,8 @@ public class Test {
 			Map<String,Object> result = null;
 			RequestHeader header = new RequestHeader();
 			header.add("proxy", "http://192.168.1.3:8287");
+			header.add("access_token", "himyidea_test_token");
+			header.add("sign", "himyidea_test_sign");
 			RequestBody body = new RequestBody();
 			body.add("name", "lzy");
 //			result = client.method(RequestMethod.POST).url("http://localhost/test2/get").header(header).contentType(RequestContentType.FORM).body(body).send();
@@ -23,13 +25,12 @@ public class Test {
 //			System.out.println(result.get("body").toString().replaceAll("<br/>", "\n"));
 //			System.out.println("---------------------------------------------------------");
 			result = client
-					.url("http://192.168.1.3:8286/xxx/test/get")
-					.method(RequestMethod.POST)
-					.header(header)
-					.contentType(RequestContentType.FORM)
-					.body(body)
-					.proxy("http", "192.168.1.3", 80)
-					.send();
+				.http()
+				.url("http://pt.test.changfunfly.com/security/v1/hotel/platformCity")
+				.method(RequestMethod.POST)
+				.header(header)
+				.send();
+			System.out.println(result);
 			System.out.println(result.get("header").toString());
 			System.out.println(result.get("body").toString().replaceAll("<br/>", "\n"));
 			System.out.println("---------------------------------------------------------");
