@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.weaver.inte.utils.StringUtils;
+import com.weaver.inte.utils.StringExtUtils;
 
 import okhttp3.Request.Builder;
 
@@ -34,8 +34,8 @@ public class RequestHeader {
 	void newBuild(Builder build) {
 		if (params != null && params.size() > 0) {
 			params.forEach(map -> {
-				String key = StringUtils.ifNull(map.get("key"));
-				String value = StringUtils.ifNull(map.get("value"));
+				String key = StringExtUtils.ifNull(map.get("key"));
+				String value = StringExtUtils.ifNull(map.get("value"));
 				build.addHeader(key, value);
 			});
 		}
