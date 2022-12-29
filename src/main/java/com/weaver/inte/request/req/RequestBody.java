@@ -1,27 +1,26 @@
 package com.weaver.inte.request.req;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
 import com.weaver.inte.request.enums.RequestContentType;
 import com.weaver.inte.request.enums.RequestRawFormat;
 import com.weaver.inte.utils.StringExtUtils;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody.Builder;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public class RequestBody {
 
-    private List<ConcurrentHashMap<String, Object>> params = new ArrayList<>();
+    private List<Map<String, Object>> params = new ArrayList<>();
     private String rowBody = "";
     private RequestRawFormat rawFormat = null;
     public RequestContentType contentType = null;
 
     public RequestBody add(String key, Object value) {
-        ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+        HashMap<String, Object> map = new HashMap<>();
         map.put("key", key);
         map.put("value", value);
         params.add(map);
@@ -31,7 +30,7 @@ public class RequestBody {
     }
 
     public RequestBody addFile(String key, String fileName, byte[] value) {
-        ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+        HashMap<String, Object> map = new HashMap<>();
         map.put("key", key);
         map.put("fileName", fileName);
         map.put("value", value);
@@ -49,7 +48,7 @@ public class RequestBody {
     }
 
     public RequestBody binary(byte[] value) {
-        ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+        HashMap<String, Object> map = new HashMap<>();
         map.put("value", value);
         params.add(map);
         if (contentType == null)
