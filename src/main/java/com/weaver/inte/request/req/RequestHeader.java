@@ -31,7 +31,7 @@ public class RequestHeader {
 	}
 
 
-	void newBuild(Builder build) {
+	void addHeader2Builder(Builder build) {
 		if (params != null && params.size() > 0) {
 			params.forEach(map -> {
 				String key = StringExtUtils.ifNull(map.get("key"));

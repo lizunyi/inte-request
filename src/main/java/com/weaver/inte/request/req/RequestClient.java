@@ -119,7 +119,7 @@ public class RequestClient {
         }
         Builder builder = new Request.Builder().method(method.name(), request).url(url);
         if (header != null) {
-            header.newBuild(builder);
+            header.addHeader2Builder(builder);
         }
         return builder.build();
     }
